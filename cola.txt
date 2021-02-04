@@ -1,0 +1,11 @@
+  fetch('<?php echo base_url('index.php/crmDemocratasFuncionarios_c/getLista'); ?>',
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({pg:Number.parseInt(numero)}),
+                        }
+                    )
+                    .then(response => response.json())
+                    .then(function(data){

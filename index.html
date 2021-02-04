@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./vendor/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/estilo.css">
+    <title>Estoque</title>
+    <!--
+        usar o bootsrap como estrutura
+        e flexdesing como estilo personalizado
+    -->
+    <style>
+        .lista-estoque
+        {
+            border: 1px solid #8f8a8a;
+            box-shadow: 2px 3px #a3a4a4;
+            padding: 18px;
+            transition: 480ms;
+            display: none;
+        }
+        .linha
+        {
+            border: 1px solid #1358a8;
+            margin-bottom: 1vh;
+        }
+        .item
+        {
+            border-bottom: 1px solid #777777;    
+        }
+
+    </style>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <h1 class="text-center lead"> Estoque DBV </h1>
+             <form action="" id="formulario">
+                 <div class="row">
+                     <div class="col-12 formulario-itens">
+                         <input type="text" class="form-control" name="item" placeholder="o nome do Item" aria-label="Username" aria-describedby="basic-addon1">
+                     </div>        
+                 </div>
+                 <div class="row">
+                     <div class="col-12 formulario-itens">
+                         <input type="number" class="form-control" name="quantidade" placeholder="Quantidade" aria-label="quantidade" aria-describedby="basic-addon1">
+                     </div>  
+                 </div>
+                 <div class="row">
+                     <div class="col-12 formulario-itens">
+                         <span class="label">Descrição</span>
+                         <textarea class="form-control" name="descricao" id=""></textarea>
+                     </div>  
+                 </div>
+                 <div class="row">
+                     <div class="col-12 formulario-itens">
+                         <!-- <input class="form-control" type="text" name="status" placeholder="Status"> -->
+                         <select class="form-control" name="status" id="">
+                             <option value="presente">Presente no Estoque</option>
+                             <option value="ausente">Ausente do estoque</option>
+                         </select>
+                     </div>  
+                 </div>
+                 
+                 <div class="row">
+                     <div class="col-12 formulario-itens">
+                         <button type="submit" class="btn btn-block btn-info"> Salvar </button>
+                     </div>
+                 </div>
+             </form> 
+             <div class="lista-estoque">
+                 <div class="row mb-1">
+                     <div class='col-lg-3 col-12 text-center'><strong>TITULO</strong></div>
+                     <div class='col-lg-3 col-12 text-center'><strong>DESC</strong></div>
+                     <div class='col-lg-3 col-12 text-center'><strong>QTD</strong></div>
+                     <div class='col-lg-3 col-12 text-center'><strong>STATUS</strong></div>
+                 </div>
+                 <div class="conteudo">
+
+                 </div>
+             </div>  
+        </div>
+    </main>
+    <script>
+        let form = document.querySelector('#formulario');
+        form.addEventListener('submit',(event) => {
+            event.preventDefault();
+              let dadoFormulario = new FormData(form);
+                    let dadoEnviar =  {
+                        titulo:dadoFormulario.get('item'),
+                        quantidade:dadoFormulario.get('quantidade'),
+                        descricao:dadoFormulario.get('descricao'),
+                        status:dadoFormulario.get('status')
+                    };
+                   //enviar para api backend
+                        // fetch('http://localhost:8282/index.php',{
+                        //     method:'POST',
+                        //     //    mode:'cros',
+                        //     headers:{
+                        //         'Content-Type':'application/json',
+                        //     },
+                        //     body:JSON.stringify(dadoEnviar),
+                        // })
+                        // .then(response=>response.json())
+                        // .then(function(data){
+                        //     //aqui vai retornar o dados, carragar a lista
+                        //     console.log('esta carregando!, e retornando algo',data);
+                        // });
+                   
+                   //enviar para localstorage
+                   guardarDados(dadoEnviar);
+                //    listarEstoque();      
+               
+        });
+                
+        var guardarDados = function(dados){
+            if(localStorage.getItem('registro_do_estoque') == undefined || localStorage.getItem('registro_do_estoque') == null ){
+                let arr = [];
+                arr.push(dados);
+                    localStorage.setItem('registro_do_estoque',JSON.stringify(arr));
+                        listarEstoque();
+            }else{
+                let itens = localStorage.getItem('registro_do_estoque');
+                    let arrItens = JSON.parse(itens);
+                        console.log(' rsgatado ',arrItens);
+                        arrItens.push(dados);
+                        console.log(' pos add ',arrItens);
+                            localStorage.setItem('registro_do_estoque',JSON.stringify(arrItens));
+                            listarEstoque();
+            }
+            //.push
+        }
+        var listarEstoque = function()
+        {
+            //resgatar conteudo
+            let continerLista = document.querySelector('.lista-estoque');
+            let continerl = document.querySelector('.conteudo');
+            
+            if(localStorage.getItem('registro_do_estoque') != undefined || localStorage.getItem('registro_do_estoque') != null )
+            {
+                continerLista.style.display="block";
+                continerl.style.display="block";
+                //apagar contudo
+                continerl.innerHTML = "";
+                //
+                let itens = localStorage.getItem('registro_do_estoque');
+                let arrItens = JSON.parse(itens);
+                  
+                    arrItens.forEach(el => {
+                        var criar_elemento = document.createElement('div');
+                            criar_elemento.className = "row mt-1 mb-1 linha";
+                            
+                            criar_elemento.innerHTML = "<div class='col-lg-3 col-12 item'>"+el.titulo+"</div>"+
+                            "<div class='col-lg-3 col-12 item'>"+el.descricao+"</div>"+
+                            "<div class='col-lg-3 col-12 item'>"+el.quantidade+"</div>"+
+                            "<div class='col-lg-3 col-12 item'>"+el.status+"</div>";
+                        
+                                continerl.append(criar_elemento);
+                                // console.log('elemento : ',el);
+                    });
+            }
+        }
+
+        listarEstoque();
+    </script>
+</body>
+</html>

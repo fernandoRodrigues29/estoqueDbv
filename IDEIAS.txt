@@ -1,0 +1,27 @@
+#sistema de estoque dos desbravadores 14 bis
+
+#sera um sistea web pwa, cadastro salvando em um banco sqlite, será de uma tela limbando para ser um projeto simples
+para o portifolio
+
+#cadastro com as informações, item tipo(ferramentas,barracas,comunicação,cozinha,acampamento,vestimentas)
+
+#listar 
+	sistema de pesquisa
+	listar vai aparecer a medida do scroll
+	será responsivo mobel
+
+=========tecnologia============
+fase 1
+ front
+	nodejs(dverá criar um arquivo simples puro para o githpages) puro
+ api
+	usar o browser para preservar o conteudo
+fase 2
+ front
+	vue(dverá criar um arquivo simples puro para o githpages) puro
+ api
+	lumen
+	sqlite
+
+
+	
