@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./vendor/css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/estilo.css">
+    <link rel="stylesheet" href="./vendor/font-awesome-4.7.0/css/font-awesome.min.css">
+    <script src="./vendor/js/bootstrap.min.js"></script>
+    <!--para funcionar  modal -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
     <title>Estoque</title>
     <!--
         usar o bootsrap como estrutura
@@ -21,12 +28,14 @@
         }
         .linha
         {
-            border: 1px solid #1358a8;
+            border: 0px solid #1358a8;
+            padding-bottom: 15px;
             margin-bottom: 1vh;
         }
         .item
         {
-            border-bottom: 1px solid #777777;    
+            border-bottom: 1px solid #777777;
+            padding-bottom: 2px;    
         }
 
     </style>
@@ -54,12 +63,19 @@
                  </div>
                  <div class="row">
                      <div class="col-12 formulario-itens">
-                         <!-- <input class="form-control" type="text" name="status" placeholder="Status"> -->
                          <select class="form-control" name="status" id="">
                              <option value="presente">Presente no Estoque</option>
                              <option value="ausente">Ausente do estoque</option>
                          </select>
                      </div>  
+                 </div>
+                 <div class="row">
+                     <div class="col-12">
+                         <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="cs1">
+                            <label class="custom-control-input" for="cs1"> Estado do Estoque</label>
+                         </div>
+                     </div>
                  </div>
                  
                  <div class="row">
@@ -70,18 +86,67 @@
              </form> 
              <div class="lista-estoque">
                  <div class="row mb-1">
-                     <div class='col-lg-3 col-12 text-center'><strong>TITULO</strong></div>
-                     <div class='col-lg-3 col-12 text-center'><strong>DESC</strong></div>
-                     <div class='col-lg-3 col-12 text-center'><strong>QTD</strong></div>
-                     <div class='col-lg-3 col-12 text-center'><strong>STATUS</strong></div>
+                     <div class='col-lg-2 col-12 text-center'><strong>TITULO</strong></div>
+                     <div class='col-lg-2 col-12 text-center'><strong>DESC</strong></div>
+                     <div class='col-lg-2 col-12 text-center'><strong>QTD</strong></div>
+                     <div class='col-lg-2 col-12 text-center'><strong>STATUS</strong></div>
+                     <div class='col-lg-2 col-12 text-center'><strong><i class="fa fa-pencil-square-o" aria-hidden="true" alt="EDITAR" title="EDITAR"></i></strong></div>
+                     <div class='col-lg-2 col-12 text-center'><strong><i class="fa fa-trash-o" aria-hidden="true" alt="EXCLUIR" title="EXCLUIR"></i></strong></div>
                  </div>
                  <div class="conteudo">
 
                  </div>
              </div>  
         </div>
+       
+          
     </main>
+    <!--modal-->
+    <div class="modal fade" id="formularioEditar" tabindex="-1" role="dialog" aria-labelledby="formulario-editar" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="formulario-xeditar">Editar Item</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+               <div class="row">
+                   <div class="col-12">
+                    <span class="label">Nome</span>
+                       <input type="text" class="form-control"  name="nome" id="m-nome" value="">
+                   </div>
+                   <div class="col-12">
+                    <span class="label">quantidade</span>
+                       <input type="text" class="form-control" name="quantidade" id="m-quantidade" value="">
+                   </div>
+                   <div class="col-12">
+                        <span class="label">Descrição</span>
+                        <textarea class="form-control" name="descricao" id="m-descricao" ></textarea>
+                   </div>
+                   
+                   <div class="col-12">
+                        <select class="form-control" name="status" id="m-status">
+                            <option value="presente">Presente no Estoque</option>
+                            <option value="ausente">Ausente do estoque</option>
+                        </select>
+                   </div>
+               </div>     
+
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+              <button type="button" onclick="atualizarItem()" class="btn btn-primary">Atualizar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    <!--fim modal-->
+
     <script>
+        var indice_geral = 0;
         let form = document.querySelector('#formulario');
         form.addEventListener('submit',(event) => {
             event.preventDefault();
@@ -92,21 +157,6 @@
                         descricao:dadoFormulario.get('descricao'),
                         status:dadoFormulario.get('status')
                     };
-                   //enviar para api backend
-                        // fetch('http://localhost:8282/index.php',{
-                        //     method:'POST',
-                        //     //    mode:'cros',
-                        //     headers:{
-                        //         'Content-Type':'application/json',
-                        //     },
-                        //     body:JSON.stringify(dadoEnviar),
-                        // })
-                        // .then(response=>response.json())
-                        // .then(function(data){
-                        //     //aqui vai retornar o dados, carragar a lista
-                        //     console.log('esta carregando!, e retornando algo',data);
-                        // });
-                   
                    //enviar para localstorage
                    guardarDados(dadoEnviar);
                 //    listarEstoque();      
@@ -146,19 +196,79 @@
                 let itens = localStorage.getItem('registro_do_estoque');
                 let arrItens = JSON.parse(itens);
                   
-                    arrItens.forEach(el => {
+                    arrItens.forEach((el,i) => {
                         var criar_elemento = document.createElement('div');
                             criar_elemento.className = "row mt-1 mb-1 linha";
                             
-                            criar_elemento.innerHTML = "<div class='col-lg-3 col-12 item'>"+el.titulo+"</div>"+
-                            "<div class='col-lg-3 col-12 item'>"+el.descricao+"</div>"+
-                            "<div class='col-lg-3 col-12 item'>"+el.quantidade+"</div>"+
-                            "<div class='col-lg-3 col-12 item'>"+el.status+"</div>";
+                            criar_elemento.innerHTML = "<div class='col-lg-2 col-12 item'>"+el.titulo+"</div>"+
+                            "<div class='col-lg-2 col-12 item'>"+el.descricao+"</div>"+
+                            "<div class='col-lg-2 col-12 item'>"+el.quantidade+"</div>"+
+                            "<div class='col-lg-2 col-12 item'>"+el.status+"</div>"+
+                            "<div class='col-lg-2 col-12 item'><button class='btn btn-info btn-block' data-toggle='modal' data-target='#formularioEditar'  onclick='formEditarItem("+i+")'><i class='fa fa-pencil-square-o' aria-hidden='true' alt='EDITAR' title='EDITAR' ></i></button></div>"+
+                            "<div class='col-lg-2 col-12 item'><button class='btn btn-danger btn-block' onclick='excluirItem("+i+")'><i class='fa fa-trash-o' aria-hidden='true' alt='EXCLUIR' title='EXCLUIR'></i></button></div>"+
+                            "";
                         
                                 continerl.append(criar_elemento);
-                                // console.log('elemento : ',el);
+                                
                     });
             }
+        }
+        //editar item
+        var formEditarItem = function(indice){
+            indice_geral = indice;
+            let itens = localStorage.getItem('registro_do_estoque');
+            let arrItens = JSON.parse(itens);
+            let rs = arrItens[indice];
+                console.log('o idndice do estoque e ',arrItens[indice]);
+                    
+                    let fnome = document.querySelector('#m-nome');
+                    let fqtd = document.querySelector('#m-quantidade');
+                    let fdsc = document.querySelector('#m-descricao');
+                    let fstatus = document.querySelector('#m-status');
+                   
+                        fnome.value = rs.titulo;
+                        fqtd.value = rs.quantidade;
+                        fdsc.value = rs.descricao;
+                        fstatus.value = rs.status;
+                    
+        }
+
+        var atualizarItem = function(){
+            let modalWindow = document.querySelector('#formularioEditar');
+
+            let itens = localStorage.getItem('registro_do_estoque');
+            let arrItens = JSON.parse(itens);
+
+            let rs = arrItens[indice_geral];
+                    let fnome = document.querySelector('#m-nome');
+                    let fqtd = document.querySelector('#m-quantidade');
+                    let fdsc = document.querySelector('#m-descricao');
+                    let fstatus = document.querySelector('#m-status');
+                        
+                    let obj  ={titulo: ""+fnome.value, 
+                        quantidade: ""+fqtd.value,
+                         descricao: ""+fdsc.value, 
+                         status: ""+fstatus.value}
+                        
+                        arrItens[indice_geral] = obj;
+                        
+                            let sf = JSON.stringify(arrItens);
+                            localStorage.setItem('registro_do_estoque',sf);
+                                    listarEstoque();
+                                    // modalWindow.style.display='none';
+        }
+        
+        var excluirItem = function(indice){
+            let itens = localStorage.getItem('registro_do_estoque');
+            let arrItens = JSON.parse(itens);
+
+                let novoArr = arrItens.splice(arrItens[indice], 1);
+                    
+                    let sf = JSON.stringify(novoArr);
+                      localStorage.setItem('registro_do_estoque',sf);
+                         alert('REGISTRO FOI REMOVIDO!');    
+                        listarEstoque();
+
         }
 
         listarEstoque();
